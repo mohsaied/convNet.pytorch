@@ -372,3 +372,7 @@ class BasicConv2d(nn.Module):
         x = self.conv(x)
         x = self.bn(x)
         return F.relu(x, inplace=True)
+
+def inception_v3(**kwargs):
+    num_classes = getattr(kwargs, 'num_classes', 1000)
+    return Inception3(num_classes)
