@@ -6,6 +6,7 @@ from .inception_resnet_v2 import *
 from .googlenet import *
 from .inception_v2 import *
 from .inception_v3 import *
+from .inception_v3pruned import *
 from .mobilenet import *
 from .mobilenet_v2 import *
 from .densenet import *
