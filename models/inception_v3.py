@@ -6,7 +6,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.jit.annotations import Optional
-from .utils import load_state_dict_from_url
 
 
 __all__ = ['Inception3', 'inception_v3', 'InceptionOutputs', '_InceptionOutputs']
@@ -61,7 +60,7 @@ def inception_v3(pretrained=False, progress=True, **kwargs):
 
 class Inception3(nn.Module):
 
-    def __init__(self, num_classes=1000, aux_logits=True, transform_input=False):
+    def __init__(self, num_classes=1000, dataset='imagenet', aux_logits=False, transform_input=False):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
@@ -97,6 +96,14 @@ class Inception3(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
+
+        self.regime = [
+            {'epoch': 0, 'optimizer': 'SGD', 'lr': 1e-1,
+             'weight_decay': 1e-4, 'momentum': 0.9},
+            {'epoch': 30, 'lr': 1e-2},
+            {'epoch': 60, 'lr': 1e-3, 'weight_decay': 0},
+            {'epoch': 90, 'lr': 1e-4}
+        ]
 
     def forward(self, x):
         if self.transform_input:
